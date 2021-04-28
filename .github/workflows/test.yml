@@ -18,6 +18,9 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: path/to/artifact/world.txt
+    - name: Store the current date and time
+      id: date_time
+      run: echo "::set-output name=date_time::$(date '+%Y%m%d_%H%M%S')"
     - name: Compute short SHA of the commit
       id: sha_short
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -25,8 +28,8 @@ jobs:
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.REPO_ACCESS_TOKEN }}"
-        automatic_release_tag: "release-${{ steps.sha_short.outputs.sha_short }}"
+        automatic_release_tag: "release-${{ steps.date_time.outputs.date_time }}-${{ steps.sha_short.outputs.sha_short }}"
         prerelease: true
-        title: "Release ${{ steps.sha_short.outputs.sha_short }}"
+        title: "Release ${{ steps.date_time.outputs.date_time }} ${{ steps.sha_short.outputs.sha_short }}"
         files: |
           path/to/artifact/*
