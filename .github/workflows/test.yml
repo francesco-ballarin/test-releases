@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir -p path/to/artifact
+    - run: echo hello > path/to/artifact/world.txt
+    - uses: actions/upload-artifact@v2
+      with:
+        path: path/to/artifact/world.txt
+    - name: Compute short SHA of the commit
+      id: sha_short
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - name: Add release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.REPO_ACCESS_TOKEN }}"
+        automatic_release_tag: "release-${{ steps.sha_short.outputs.sha_short }}"
+        prerelease: true
+        title: "Release ${{ steps.sha_short.outputs.sha_short }}"
+        files: |
+          path/to/artifact/*
