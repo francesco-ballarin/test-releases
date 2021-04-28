@@ -20,7 +20,7 @@ jobs:
         path: path/to/artifact/world.txt
     - name: Store the current date and time
       id: date_time
-      run: echo "::set-output name=date_time::$(date '+%Y%m%d_%H%M%S')"
+      run: echo "::set-output name=date_time::$(date '+%Y%m%d-%H%M%S')"
     - name: Compute short SHA of the commit
       id: sha_short
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
